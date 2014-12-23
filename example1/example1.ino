@@ -1,44 +1,67 @@
-// SparkFun Serial LCD example 1
-// Clear the display and say "Hello World!"
+#include <Encoder.h>
 
 // This sketch is for Arduino versions 1.0 and later
-// If you're using an Arduino version older than 1.0, use
-// the other example code available on the tutorial page.
 
 // Use the softwareserial library to create a new "soft" serial port
 // for the display. This prevents display corruption when uploading code.
 #include <SoftwareSerial.h>
 
-// Attach the serial display's RX line to digital pin 2
-SoftwareSerial LCD(3,2); // pin 2 = TX, pin 3 = RX (unused)
+// Attach the serial display's RX line to digital pin 5
+SoftwareSerial LCD(5,6);  // pin 5 = TX, pin 6 = RX (unused)
+
+Encoder rotaryEncoder1 (2, 3);      // Connect encoder to Interupt Pins (2, 3)
 
 void setup()
 {
-  LCD.begin(9600);  // set up serial port for 9600 baud
-  delay(2000);      // wait for display to boot up
+  Serial.begin(9600);  // prepare to wirte to the console
+  Serial.println("Begin Encoder Test");
+  LCD.begin(9600);  // set up serial port to LCD
+  delay(1500);      // wait for display to boot up
+  clearScreen();  
+  LCD.write(254); // move cursor to beginning of first line
+  LCD.write(128);
   
+  LCD.write("12345678901234567890"); 
+  LCD.write("                    ");
+  LCD.write("    The-Charge      ");
+  LCD.write("   FRC Team 2619    "); // clear display
+  LCD.write(254); // move cursor to beginning of first line
+  LCD.write(128);  
+  delay(2000);
+  
+  LCD.write(" Begin Encoder Test ");
+  delay(2000);
+
 }
+
+long oldPosition  = -999;    // define encoder clicks
 
 void loop()
 {
   clearScreen();
-  
+ 
   LCD.write(254); // move cursor to beginning of first line
   LCD.write(128);
 
-  LCD.write("12345678901234567890"); // clear display
-  LCD.write("1                  1");
-  LCD.write("2   The-Charge     2");
-  LCD.write("3  FRC Team 2619   3"); // clear display
+  bool movingForward;
+  
+  long newPosition = rotaryEncoder1.read();
+  if (newPosition != oldPosition)
+  {
+    if (newPosition > oldPosition)    // Forward
+    {
+      movingForward = true;
+    }
+    long clicks = 0 ;
+    oldPosition = newPosition;
+    Serial.println(newPosition);
+  }
 
-  LCD.write(254); // move cursor to beginning of first line
-  LCD.write(192);
  
   delay(2000);      // leave splash screen up for 2 sec.
 
-  LCD.write("1  Hello, World!   1");
 
-  while(1); // wait forever
+//  while(1); // wait forever
 }
 
 void clearScreen()
