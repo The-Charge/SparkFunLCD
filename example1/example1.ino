@@ -34,30 +34,41 @@ void setup()
 
 }
 
-long oldPosition  = -999;    // define encoder clicks
+long oldPosition  = -1;    // define encoder clicks
+bool movingForward = true;
+long newPosition = 1;
 
 void loop()
-{
-  clearScreen();
- 
+{ 
   LCD.write(254); // move cursor to beginning of first line
   LCD.write(128);
-
-  bool movingForward;
   
-  long newPosition = rotaryEncoder1.read();
+  newPosition = rotaryEncoder1.read();
   if (newPosition != oldPosition)
   {
     if (newPosition > oldPosition)    // Forward
     {
       movingForward = true;
+      oldPosition = newPosition;
+      Serial.println(newPosition);
+      LCD.write("Forward:            ");
+
+    }
+    else
+    {
+       movingForward = false;
+       oldPosition = newPosition;
+       Serial.println(newPosition);
+       LCD.write("Backward:           ");
     }
     long clicks = 0 ;
-    oldPosition = newPosition;
-    Serial.println(newPosition);
-  }
 
- 
+  }
+  else
+  {
+     LCD.write("   Holding Still    "); 
+     
+  }
   delay(2000);      // leave splash screen up for 2 sec.
 
 
