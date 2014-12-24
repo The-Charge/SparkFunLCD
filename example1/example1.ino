@@ -21,12 +21,13 @@ void setup()
   LCD.write(254); // move cursor to beginning of first line
   LCD.write(128);
   
-  LCD.write("12345678901234567890"); 
-  LCD.write("                    ");
   LCD.write("    The-Charge      ");
-  LCD.write("   FRC Team 2619    "); // clear display
-  LCD.write(254); // move cursor to beginning of first line
-  LCD.write(128);  
+  LCD.write("   FRC Team 2619    ");
+  LCD.write("                    ");
+  LCD.write("                    ");
+   
+  LCD.write(254); // move cursor to beginning of the fourth line
+  LCD.write(212);  
   delay(2000);
   
   LCD.write(" Begin Encoder Test ");
@@ -34,45 +35,57 @@ void setup()
 
 }
 
+long clicks = 0;
 long oldPosition  = -1;    // define encoder clicks
 bool movingForward = true;
 long newPosition = 1;
+int isHolding =0;
 
 void loop()
+
 { 
   LCD.write(254); // move cursor to beginning of first line
   LCD.write(128);
   
   newPosition = rotaryEncoder1.read();
+  clicks = newPosition - oldPosition;
+  
   if (newPosition != oldPosition)
   {
     if (newPosition > oldPosition)    // Forward
     {
+      isHolding = 0;
       movingForward = true;
       oldPosition = newPosition;
       Serial.println(newPosition);
       LCD.write("Forward:            ");
+      LCD.write(254); // move cursor to the 10th character of fourth line
+      LCD.write(222);
+      LCD.print(clicks, DEC);
 
     }
-    else
+    else                            // Backward
     {
+       isHolding = 0;
        movingForward = false;
        oldPosition = newPosition;
        Serial.println(newPosition);
        LCD.write("Backward:           ");
+       LCD.write(254); // move cursor to the 10th character of fourth line
+       LCD.write(222);
+       LCD.print(clicks, DEC);
+
     }
     long clicks = 0 ;
 
   }
   else
   {
-     LCD.write("   Holding Still    "); 
-     
+    isHolding++;
+    if (isHolding > 10) LCD.write("   Holding Still    ");
   }
-  delay(2000);      // leave splash screen up for 2 sec.
+  delay(100);      // wait for 100 msec.
 
-
-//  while(1); // wait forever
 }
 
 void clearScreen()
