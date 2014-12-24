@@ -16,39 +16,42 @@ void setup()
   Serial.begin(9600);  // prepare to wirte to the console
   Serial.println("Begin Encoder Test");
   LCD.begin(9600);  // set up serial port to LCD
-  delay(1500);      // wait for display to boot up
-  clearScreen();  
+ // delay(2000);      // wait for display to boot up
+ // clearScreen();  
+  delay(500);
   LCD.write(254); // move cursor to beginning of first line
   LCD.write(128);
+  delay(1500);
   
   LCD.write("    The-Charge      ");
   LCD.write("   FRC Team 2619    ");
-  LCD.write("                    ");
-  LCD.write("                    ");
-   
-  LCD.write(254); // move cursor to beginning of the fourth line
-  LCD.write(212);  
+//  LCD.write("                    ");
+//  LCD.write("                    ");
   delay(2000);
   
-  LCD.write(" Begin Encoder Test ");
+  LCD.write(254); // move cursor to beginning of the third line
+  LCD.write(148);  
+
+  
+  LCD.write("   Encoder Tests    ");
   delay(2000);
 
 }
 
 long clicks = 0;
-long oldPosition  = -1;    // define encoder clicks
+long oldPosition  = 0;    // define encoder clicks
 bool movingForward = true;
-long newPosition = 1;
+long newPosition = 0;
 int isHolding =0;
 
 void loop()
 
 { 
-  LCD.write(254); // move cursor to beginning of first line
-  LCD.write(128);
+  LCD.write(254); // move cursor to beginning of fourth line
+  LCD.write(212);
   
   newPosition = rotaryEncoder1.read();
-  clicks = newPosition - oldPosition;
+  clicks = clicks + (newPosition - oldPosition);
   
   if (newPosition != oldPosition)
   {
